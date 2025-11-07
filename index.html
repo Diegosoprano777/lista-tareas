@@ -199,14 +199,16 @@
 
         <div>
           <label for="pais">País:</label>
-          <input type="text" id="pais" name="pais" placeholder="Ingresa tu país">
+          <input type="text" id="pais" name="pais" placeholder="Ingresa tu país" required>
+          <p class="error" id="error-pais">Por favor ingresa un país válido.</p>
         </div>
 
         <div>
           <label for="descripcion">Descripción Personal:</label>
           <textarea id="descripcion" name="descripcion" maxlength="150"
-            placeholder="Cuéntanos un poco sobre ti..."></textarea>
+            placeholder="Cuéntanos un poco sobre ti..." required></textarea>
           <p id="contador">0/150 caracteres</p>
+          <p class="error" id="error-descripcion">La descripción no puede estar vacía.</p>
         </div>
 
         <div class="terminos">
@@ -230,12 +232,12 @@
     const descripcion = document.getElementById('descripcion');
     const contador = document.getElementById('contador');
 
-    // 🟢 Contador de caracteres
+    // Contador de caracteres
     descripcion.addEventListener('input', () => {
       contador.textContent = `${descripcion.value.length}/150 caracteres`;
     });
 
-    // 🟢 Función para mostrar error
+    // Funciones de error
     function mostrarError(idCampo, mensaje) {
       const error = document.getElementById(`error-${idCampo}`);
       const campo = document.getElementById(idCampo);
@@ -244,7 +246,6 @@
       campo.classList.add('input-error');
     }
 
-    // 🟢 Función para limpiar error
     function limpiarError(idCampo) {
       const error = document.getElementById(`error-${idCampo}`);
       const campo = document.getElementById(idCampo);
@@ -252,21 +253,18 @@
       campo.classList.remove('input-error');
     }
 
-    // 🟢 Validación en tiempo real
-    const campos = ['nombre', 'apellido', 'email', 'edad', 'fecha', 'genero'];
+    const campos = ['nombre', 'apellido', 'email', 'edad', 'fecha', 'genero', 'pais', 'descripcion'];
     campos.forEach(id => {
       const campo = document.getElementById(id);
       campo.addEventListener('input', () => limpiarError(id));
       campo.addEventListener('change', () => limpiarError(id));
     });
 
-    // 🟢 Validación del checkbox
     const terminos = document.getElementById('terminos');
     terminos.addEventListener('change', () => {
       document.getElementById('error-terminos').style.display = 'none';
     });
 
-    // 🟢 Evento enviar
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       let valido = true;
@@ -277,8 +275,10 @@
       const edad = document.getElementById('edad');
       const fecha = document.getElementById('fecha');
       const genero = document.getElementById('genero');
+      const pais = document.getElementById('pais');
+      const descripcion = document.getElementById('descripcion');
 
-      // Validaciones básicas
+      // Validaciones
       if (nombre.value.trim().length < 2) {
         mostrarError('nombre', 'Por favor ingresa un nombre válido.');
         valido = false;
@@ -310,6 +310,16 @@
         valido = false;
       }
 
+      if (pais.value.trim().length < 2) {
+        mostrarError('pais', 'Por favor ingresa un país válido.');
+        valido = false;
+      }
+
+      if (descripcion.value.trim().length < 5) {
+        mostrarError('descripcion', 'La descripción debe tener al menos 5 caracteres.');
+        valido = false;
+      }
+
       if (!terminos.checked) {
         document.getElementById('error-terminos').style.display = 'block';
         valido = false;
@@ -325,7 +335,7 @@
         edad: edad.value,
         fechaNacimiento: fecha.value,
         genero: genero.value,
-        pais: document.getElementById('pais').value.trim(),
+        pais: pais.value.trim(),
         descripcion: descripcion.value.trim(),
         fechaRegistro: new Date().toLocaleString()
       };
@@ -343,5 +353,4 @@
     });
   </script>
 </body>
-
 </html>
